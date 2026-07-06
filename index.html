@@ -1,21 +1,221 @@
-<div class="grid">
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UltraPadOS Demo</title>
 
-    <div class="app">📞</div>
-    <div class="app">💬</div>
-    <div class="app">🌐</div>
-    <div class="app">📷</div>
-    <div class="app">🖼️</div>
-    <div class="app">🎵</div>
-    <div class="app">⚙️</div>
-    <div class="app">📁</div>
+<style>
+html,body{
+margin:0;
+padding:0;
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+background:black;
+}
 
-    <div class="app">🛒</div>
-    <div class="app">🗺️</div>
-    <div class="app">📺</div>
-    <div class="app">📧</div>
-    <div class="app">📅</div>
-    <div class="app">📝</div>
-    <div class="app">☁️</div>
-    <div class="app">🧮</div>
+/* wallpaper */
+.wall{
+position:fixed;
+inset:0;
+background:url("https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2200&q=80")
+center/cover no-repeat;
+transform:scale(1.05);
+}
+
+.glass{
+position:fixed;
+inset:0;
+backdrop-filter: blur(24px);
+background:rgba(0,0,0,.25);
+}
+
+/* widgets */
+.widgets{
+position:absolute;
+top:12px;
+left:12px;
+display:flex;
+gap:8px;
+z-index:10;
+}
+
+.widget{
+padding:6px 10px;
+border-radius:14px;
+background:rgba(255,255,255,.15);
+backdrop-filter: blur(18px);
+color:white;
+font-size:12px;
+}
+
+/* home */
+#home{
+position:absolute;
+inset:0;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+padding:90px 30px 120px;
+align-content:center;
+}
+
+.app{
+width:78px;
+height:78px;
+border-radius:20px;
+background:rgba(255,255,255,.16);
+backdrop-filter: blur(18px);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:white;
+cursor:pointer;
+transition:.2s;
+user-select:none;
+}
+
+.app:active{transform:scale(.9)}
+
+.icon{font-size:26px}
+.label{font-size:10px;margin-top:3px;opacity:.9}
+
+/* dock */
+.dock{
+position:absolute;
+bottom:14px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:12px;
+padding:10px 14px;
+border-radius:28px;
+background:rgba(255,255,255,.12);
+backdrop-filter: blur(25px);
+}
+
+.dock .app{
+width:62px;
+height:62px;
+}
+
+/* app window */
+.window{
+position:absolute;
+inset:0;
+background:rgba(15,15,15,.95);
+backdrop-filter: blur(25px);
+color:white;
+display:none;
+flex-direction:column;
+animation:open .25s ease;
+}
+
+.window.active{display:flex;}
+
+@keyframes open{
+from{transform:scale(.9);opacity:0}
+to{transform:scale(1);opacity:1}
+}
+
+.bar{
+height:44px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 10px;
+background:rgba(255,255,255,.08);
+}
+
+.content{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wall"></div>
+<div class="glass"></div>
+
+<div class="widgets">
+<div class="widget" id="clock">⏰</div>
+<div class="widget" id="weather">🌤️</div>
+<div class="widget" id="battery">🔋</div>
+</div>
+
+<div id="home">
+
+<div class="app" onclick="openApp('Safari')">🌐<div class="label">Safari</div></div>
+<div class="app" onclick="openApp('Messages')">💬<div class="label">Messages</div></div>
+<div class="app" onclick="openApp('Photos')">🖼️<div class="label">Photos</div></div>
+<div class="app" onclick="openApp('Files')">📁<div class="label">Files</div></div>
+<div class="app" onclick="openApp('Maps')">🗺️<div class="label">Maps</div></div>
+<div class="app" onclick="openApp('Settings')">⚙️<div class="label">Settings</div></div>
+<div class="app" onclick="openApp('Music')">🎵<div class="label">Music</div></div>
+<div class="app" onclick="openApp('Notes')">📝<div class="label">Notes</div></div>
 
 </div>
+
+<div class="dock">
+<div class="app">💬</div>
+<div class="app">📞</div>
+<div class="app">🌐</div>
+<div class="app">⚙️</div>
+</div>
+
+<div class="window" id="win">
+<div class="bar">
+<span id="title">App</span>
+<button onclick="closeApp()">✕</button>
+</div>
+<div class="content" id="content">Aplikacja</div>
+</div>
+
+<script>
+
+/* CLOCK */
+setInterval(()=>{
+const d=new Date();
+document.getElementById("clock").innerText="⏰ "+d.toLocaleTimeString().slice(0,5);
+},1000);
+
+/* WEATHER */
+fetch("https://api.open-meteo.com/v1/forecast?latitude=50.26&longitude=19.02&current_weather=true")
+.then(r=>r.json())
+.then(d=>{
+document.getElementById("weather").innerText="🌤️ "+d.current_weather.temperature+"°C";
+});
+
+/* BATTERY */
+if(navigator.getBattery){
+navigator.getBattery().then(b=>{
+const u=()=>{
+document.getElementById("battery").innerText="🔋 "+Math.round(b.level*100)+"%";
+};
+u(); b.addEventListener("levelchange",u);
+});
+}
+
+/* APPS */
+function openApp(name){
+document.getElementById("title").innerText=name;
+document.getElementById("content").innerText="Uruchomiono: "+name;
+document.getElementById("win").classList.add("active");
+}
+
+function closeApp(){
+document.getElementById("win").classList.remove("active");
+}
+
+</script>
+
+</body>
+</html>
