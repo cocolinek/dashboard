@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Ultra Dashboard</title>
+<title>Ultra Dashboard PRO</title>
 
 <style>
 body {
@@ -29,17 +29,18 @@ body {
   flex-direction: row;
   gap: 18px;
   padding: 14px;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 120px);
   overflow-x: auto;
 }
 
 /* PANELE */
 .panel {
   min-width: 340px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 20px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 22px;
   padding: 16px;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 h3 {
@@ -48,7 +49,7 @@ h3 {
   margin-bottom: 12px;
 }
 
-/* APLIKACJE */
+/* APP */
 .app {
   display: flex;
   align-items: center;
@@ -67,12 +68,10 @@ h3 {
   background: rgba(255,255,255,0.15);
 }
 
-/* 🔥 DUŻE IKONY */
 .app img {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 16px;
-  object-fit: cover;
 }
 
 /* DOCK */
@@ -84,23 +83,29 @@ h3 {
   display: flex;
   gap: 12px;
   padding: 12px 18px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 22px;
-  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.10);
+  border-radius: 24px;
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ICONS IN DOCK */
+.dock a {
+  text-decoration: none;
 }
 
 .dock img {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 14px;
-  transition: 0.2s;
+  transition: 0.25s;
 }
 
 .dock img:hover {
-  transform: scale(1.25);
+  transform: scale(1.7);
 }
 
-/* LANDSCAPE INFO */
+/* LANDSCAPE WARNING */
 @media (orientation: portrait) {
   body::before {
     content: "Obróć telefon ↻";
@@ -121,7 +126,7 @@ h3 {
 <body>
 
 <div class="topbar">
-  <div> Ultra Dashboard</div>
+  <div> Ultra System</div>
   <div id="clock"></div>
 </div>
 
@@ -129,59 +134,69 @@ h3 {
 
   <div class="panel">
     <h3>System</h3>
-    <a class="app" href="https://icloud.com">
+    <div class="app">
       <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png">
       iCloud
-    </a>
-    <a class="app" href="https://apple.com">
+    </div>
+    <div class="app">
       <img src="https://cdn-icons-png.flaticon.com/512/0/747.png">
       Apple
-    </a>
-  </div>
-
-  <div class="panel">
-    <h3>Social</h3>
-    <a class="app" href="https://instagram.com">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
-      Instagram
-    </a>
-    <a class="app" href="https://tiktok.com">
-      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png">
-      TikTok
-    </a>
+    </div>
   </div>
 
   <div class="panel">
     <h3>AI</h3>
-    <a class="app" href="https://chat.openai.com">
+    <div class="app">
       <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png">
       ChatGPT
-    </a>
-  </div>
-
-  <div class="panel">
-    <h3>Finder</h3>
-    <div class="app">
-      <img src="https://cdn-icons-png.flaticon.com/512/716/716784.png">
-      Pliki
-    </div>
-    <div class="app">
-      <img src="https://cdn-icons-png.flaticon.com/512/1829/1829586.png">
-      Zdjęcia
-    </div>
-    <div class="app">
-      <img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png">
-      Dokumenty
     </div>
   </div>
 
 </div>
 
+<!-- 🔥 NOWY DOCK -->
 <div class="dock">
-  <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
-  <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
-  <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png">
-  <img src="https://cdn-icons-png.flaticon.com/512/5968/5968523.png">
+
+  <!-- POŁĄCZENIA -->
+  <a href="tel:" title="Połączenia">
+    <img src="https://cdn-icons-png.flaticon.com/512/724/724664.png">
+  </a>
+
+  <!-- WIADOMOŚCI -->
+  <a href="sms:" title="Wiadomości">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+  </a>
+
+  <!-- ZEGAR -->
+  <a href="https://time.is" target="_blank" title="Zegar">
+    <img src="https://cdn-icons-png.flaticon.com/512/992/992700.png">
+  </a>
+
+  <!-- MUZYKA / YOUTUBE (Brave) -->
+  <a href="https://music.youtube.com" target="_blank" title="Muzyka">
+    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png">
+  </a>
+
+  <!-- BRAVE BROWSER -->
+  <a href="https://brave.com" target="_blank" title="Brave">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Brave_logo.svg/512px-Brave_logo.svg.png">
+  </a>
+
+  <!-- SKRÓT: NOC -->
+  <a href="#" onclick="alert('Skrót NOC uruchomiony')" title="Noc">
+    <img src="https://cdn-icons-png.flaticon.com/512/1164/1164954.png">
+  </a>
+
+  <!-- SKRÓT: LED -->
+  <a href="#" onclick="document.body.style.filter='brightness(2)'" title="LED">
+    <img src="https://cdn-icons-png.flaticon.com/512/702/702814.png">
+  </a>
+
+  <!-- SKRÓT: ENERGIA -->
+  <a href="#" onclick="document.body.style.filter='hue-rotate(120deg)'" title="Energia">
+    <img src="https://cdn-icons-png.flaticon.com/512/1146/1146869.png">
+  </a>
+
 </div>
 
 <script>
