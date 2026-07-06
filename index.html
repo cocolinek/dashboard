@@ -2,233 +2,323 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Ultra OS Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iPadOS ULTRA</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow: hidden;
-  color: white;
+html, body {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    background:black;
 }
 
-/* 🌄 TAPETA */
-.wallpaper {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at top, #6366f1, #0f172a, #020617);
-  z-index: -2;
+/* ===== WALL ===== */
+.wall {
+    position:fixed;
+    inset:0;
+    background:url("https://images.unsplash.com/photo-1520975922203-b6d1c8f2f0b2?auto=format&fit=crop&w=2200&q=80")
+    center/cover no-repeat;
+    transform:scale(1.05);
 }
 
-/* 🌫️ BLUR LAYER (portrait frost) */
-.blur-layer {
-  position: fixed;
-  inset: 0;
-  backdrop-filter: blur(0px);
-  transition: 0.5s ease;
-  z-index: -1;
+.blur {
+    position:fixed;
+    inset:0;
+    backdrop-filter: blur(22px);
+    background:rgba(0,0,0,0.25);
 }
 
-/* TOP BAR */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  padding: 14px 18px;
-  font-size: 14px;
-  opacity: 0.85;
+/* ===== TOP WIDGETS ===== */
+.widgets {
+    position:absolute;
+    top:16px;
+    left:16px;
+    display:flex;
+    gap:10px;
+    z-index:50;
 }
 
-/* DASHBOARD */
-.dashboard {
-  display: flex;
-  flex-direction: row;
-  gap: 18px;
-  padding: 14px;
-  height: calc(100vh - 120px);
-  overflow-x: auto;
+.widget {
+    padding:8px 10px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.14);
+    backdrop-filter: blur(20px);
+    color:white;
+    font-size:12px;
 }
 
-/* PANEL */
-.panel {
-  min-width: 340px;
-  background: rgba(255,255,255,0.07);
-  border-radius: 22px;
-  padding: 16px;
-  backdrop-filter: blur(25px);
-  border: 1px solid rgba(255,255,255,0.08);
-  animation: pop 0.4s ease;
+/* ===== SPRINGBOARD ===== */
+#home {
+    position:absolute;
+    inset:0;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    padding:80px 40px 120px;
+    align-content:center;
+}
+
+.app {
+    width:82px;
+    height:82px;
+    border-radius:22px;
+    background:rgba(255,255,255,0.14);
+    backdrop-filter: blur(18px);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    cursor:pointer;
+    user-select:none;
+    transition:.2s;
+}
+
+.app:active { transform:scale(.92); }
+
+.icon { font-size:30px; }
+.label { font-size:11px; margin-top:3px; opacity:.9; }
+
+/* ===== DOCK ===== */
+.dock {
+    position:absolute;
+    bottom:14px;
+    left:50%;
+    transform:translateX(-50%);
+    height:88px;
+    padding:10px 16px;
+    border-radius:28px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter: blur(25px);
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.dock .app {
+    width:64px;
+    height:64px;
+}
+
+.dock .app:hover {
+    transform:scale(1.35);
+}
+
+/* ===== WINDOWS (Stage Manager) ===== */
+.window {
+    position:absolute;
+    width:420px;
+    height:300px;
+    border-radius:18px;
+    background:rgba(20,20,20,0.85);
+    backdrop-filter: blur(25px);
+    color:white;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.window.active {
+    display:flex;
+    animation:pop .2s ease;
 }
 
 @keyframes pop {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+    from { transform:scale(.9); opacity:0; }
+    to { transform:scale(1); opacity:1; }
 }
 
-h3 {
-  font-size: 13px;
-  opacity: 0.6;
-  margin-bottom: 12px;
+.titlebar {
+    height:38px;
+    background:rgba(255,255,255,0.08);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 10px;
+    cursor:grab;
 }
 
-/* APP ICONS */
-.app {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.08);
-  transition: 0.2s;
+.content {
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.app:hover {
-  transform: scale(1.05);
-  background: rgba(255,255,255,0.15);
+/* resize handle */
+.resize {
+    position:absolute;
+    right:0;
+    bottom:0;
+    width:18px;
+    height:18px;
+    cursor:nwse-resize;
 }
 
-.app img {
-  width: 62px;
-  height: 62px;
-  border-radius: 16px;
-  transition: 0.2s;
+/* ===== SPOTLIGHT ===== */
+#spot {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:300px;
+    padding:14px;
+    border-radius:16px;
+    background:rgba(0,0,0,0.6);
+    backdrop-filter: blur(20px);
+    display:none;
+    color:white;
 }
 
-.app img:active {
-  transform: scale(0.9);
-}
-
-/* DOCK */
-.dock {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 12px;
-  padding: 12px 18px;
-  background: rgba(255,255,255,0.10);
-  border-radius: 24px;
-  backdrop-filter: blur(25px);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.dock a {
-  text-decoration: none;
-}
-
-.dock img {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  transition: 0.25s;
-}
-
-.dock img:hover {
-  transform: scale(1.7) translateY(-6px);
-}
-
-/* 📱 PORTRAIT = FROSTED GLASS */
-@media (orientation: portrait) {
-  .blur-layer {
-    backdrop-filter: blur(18px);
-  }
-
-  body::before {
-    content: "Obróć urządzenie ↻";
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 22px;
-    background: rgba(0,0,0,0.35);
-    z-index: 999;
-  }
+/* folder */
+.folder {
+    width:90px;
+    height:90px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.2);
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
 }
 </style>
 </head>
 
 <body>
 
-<div class="wallpaper"></div>
-<div class="blur-layer"></div>
+<div class="wall"></div>
+<div class="blur"></div>
 
-<div class="topbar">
-  <div> Ultra OS</div>
-  <div id="clock"></div>
+<!-- widgets -->
+<div class="widgets">
+    <div class="widget" id="clock">⏰ --:--</div>
+    <div class="widget" id="weather">🌤️ ...</div>
+    <div class="widget" id="battery">🔋 ...</div>
+    <div class="widget" id="cal">📅 ...</div>
 </div>
 
-<div class="dashboard">
+<!-- HOME -->
+<div id="home">
 
-  <div class="panel">
-    <h3>System</h3>
-    <div class="app">
-      <img src="https://cdn-icons-png.flaticon.com/512/888/888879.png">
-      iCloud
-    </div>
-    <div class="app">
-      <img src="https://cdn-icons-png.flaticon.com/512/0/747.png">
-      Apple
-    </div>
-  </div>
-
-  <div class="panel">
-    <h3>AI</h3>
-    <div class="app">
-      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png">
-      ChatGPT
-    </div>
-  </div>
+    <div class="app" onclick="openWin('Safari')"><div class="icon">🌐</div><div class="label">Safari</div></div>
+    <div class="app" onclick="openWin('Messages')"><div class="icon">💬</div></div>
+    <div class="app" onclick="openWin('Music')"><div class="icon">🎵</div></div>
+    <div class="app" onclick="openWin('Photos')"><div class="icon">🖼️</div></div>
+    <div class="app" onclick="openWin('Maps')"><div class="icon">🗺️</div></div>
+    <div class="app" onclick="openWin('Files')"><div class="icon">📁</div></div>
+    <div class="app" onclick="openWin('Settings')"><div class="icon">⚙️</div></div>
 
 </div>
 
-<!-- 🔥 DOCK -->
+<!-- DOCK -->
 <div class="dock">
-
-  <a href="tel:">
-    <img src="https://cdn-icons-png.flaticon.com/512/724/724664.png" title="Połączenia">
-  </a>
-
-  <a href="sms:">
-    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" title="Wiadomości">
-  </a>
-
-  <a href="https://time.is" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/992/992700.png" title="Zegar">
-  </a>
-
-  <a href="https://music.youtube.com" target="_blank">
-    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" title="YouTube Music">
-  </a>
-
-  <a href="https://brave.com" target="_blank">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Brave_logo.svg/512px-Brave_logo.svg.png" title="Brave">
-  </a>
-
-  <a href="#" onclick="alert('NOC MODE')">
-    <img src="https://cdn-icons-png.flaticon.com/512/1164/1164954.png" title="Noc">
-  </a>
-
-  <a href="#" onclick="document.body.style.filter='brightness(2)'">
-    <img src="https://cdn-icons-png.flaticon.com/512/702/702814.png" title="LED">
-  </a>
-
-  <a href="#" onclick="document.body.style.filter='hue-rotate(120deg)'">
-    <img src="https://cdn-icons-png.flaticon.com/512/1146/1146869.png" title="Energia">
-  </a>
-
+    <div class="app">🌐</div>
+    <div class="app">💬</div>
+    <div class="app">🎵</div>
+    <div class="app">📁</div>
 </div>
+
+<!-- WINDOW -->
+<div class="window" id="win">
+    <div class="titlebar" id="bar">
+        <span id="title">App</span>
+        <button onclick="closeWin()">✕</button>
+    </div>
+    <div class="content">Aplikacja działa</div>
+    <div class="resize"></div>
+</div>
+
+<!-- spotlight -->
+<input id="spot" placeholder="Szukaj..." />
 
 <script>
-function clock(){
-  const now = new Date();
-  document.getElementById("clock").innerText =
-    now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+/* ===== CLOCK ===== */
+setInterval(()=>{
+const d=new Date();
+document.getElementById("clock").innerText="⏰ "+d.toLocaleTimeString().slice(0,5);
+},1000);
+
+/* ===== CALENDAR ===== */
+const d=new Date();
+document.getElementById("cal").innerText="📅 "+d.getDate()+"."+(d.getMonth()+1);
+
+/* ===== BATTERY ===== */
+if(navigator.getBattery){
+navigator.getBattery().then(b=>{
+const u=()=>{
+document.getElementById("battery").innerText="🔋 "+Math.round(b.level*100)+"%";
+};
+u(); b.addEventListener("levelchange",u);
+});
 }
-setInterval(clock,1000);
-clock();
+
+/* ===== WEATHER ===== */
+fetch("https://api.open-meteo.com/v1/forecast?latitude=50.26&longitude=19.02&current_weather=true")
+.then(r=>r.json()).then(d=>{
+document.getElementById("weather").innerText="🌤️ "+d.current_weather.temperature+"°C";
+});
+
+/* ===== WINDOWS ===== */
+let win=document.getElementById("win");
+let bar=document.getElementById("bar");
+let dragging=false,dx=0,dy=0;
+
+function openWin(name){
+win.style.left="50px";
+win.style.top="80px";
+win.classList.add("active");
+document.getElementById("title").innerText=name;
+}
+
+function closeWin(){
+win.classList.remove("active");
+}
+
+/* drag window */
+bar.addEventListener("mousedown",e=>{
+dragging=true;
+dx=e.offsetX;
+dy=e.offsetY;
+});
+
+document.addEventListener("mousemove",e=>{
+if(dragging){
+win.style.left=(e.pageX-dx)+"px";
+win.style.top=(e.pageY-dy)+"px";
+}
+});
+
+document.addEventListener("mouseup",()=>dragging=false);
+
+/* resize */
+let res=document.querySelector(".resize");
+let resizing=false;
+
+res.addEventListener("mousedown",()=>resizing=true);
+
+document.addEventListener("mousemove",e=>{
+if(resizing){
+win.style.width=e.pageX-win.offsetLeft+"px";
+win.style.height=e.pageY-win.offsetTop+"px";
+}
+});
+
+document.addEventListener("mouseup",()=>resizing=false);
+
+/* SPOTLIGHT */
+document.addEventListener("keydown",e=>{
+if(e.key===" "){
+let s=document.getElementById("spot");
+s.style.display="block";
+s.focus();
+}
+});
 </script>
 
 </body>
